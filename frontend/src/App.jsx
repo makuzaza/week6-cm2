@@ -33,7 +33,6 @@ const App = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify(newJob),
     });
@@ -43,9 +42,6 @@ const App = () => {
     const token = localStorage.getItem("token");
     await fetch(`/api/jobs/${id}`, {
       method: "DELETE",
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
     });
   };
 
@@ -55,7 +51,6 @@ const App = () => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify(job),
     });
@@ -77,24 +72,12 @@ const App = () => {
 
         <Route
           path="/add-job"
-          element={
-            isAuthenticated ? (
-              <AddJobPage addJobSubmit={addJob} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
+          element={<AddJobPage addJobSubmit={addJob} />}
         />
 
         <Route
           path="/edit-job/:id"
-          element={
-            isAuthenticated ? (
-              <EditJobPage updateJobSubmit={updateJob} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
+          element={<EditJobPage updateJobSubmit={updateJob} />}
           loader={jobLoader}
         />
         <Route
@@ -103,7 +86,7 @@ const App = () => {
             !isAuthenticated ? (
               <LoginPage setIsAuthenticated={setIsAuthenticated} />
             ) : (
-              <Navigate to="/" />
+              <Navigate to="/" replace />
             )
           }
         />
@@ -113,7 +96,7 @@ const App = () => {
             !isAuthenticated ? (
               <SignupPage setIsAuthenticated={setIsAuthenticated} />
             ) : (
-              <Navigate to="/" />
+              <Navigate to="/" replace />
             )
           }
         />

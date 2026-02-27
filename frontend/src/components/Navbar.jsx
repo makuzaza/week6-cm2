@@ -40,12 +40,11 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
                 <NavLink to="/jobs" className={linkClass}>
                   Jobs
                 </NavLink>
-
+                <NavLink to="/add-job" className={linkClass}>
+                    Add Job
+                </NavLink>
                 {isAuthenticated && (
                   <>
-                    <NavLink to="/add-job" className={linkClass}>
-                      Add Job
-                    </NavLink>
                     <span className="text-indigo-100 px-2">
                       Welcome{email ? `, ${email}` : ""}
                     </span>
