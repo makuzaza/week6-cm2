@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import {
   Route,
+  Navigate,
   createBrowserRouter,
   createRoutesFromElements,
   RouterProvider,
@@ -15,51 +17,96 @@ import SignupPage from './pages/SignupPage';
 import LoginPage from './pages/LoginPage';
 
 const App = () => {
-  // Add New Job
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem('token')
+  );
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setIsAuthenticated(false);
+  };
+
   const addJob = async (newJob) => {
-    const res = await fetch('/api/jobs', {
+    const token = localStorage.getItem('token');
+    await fetch('/api/jobs', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify(newJob),
     });
-    return;
   };
 
-  // Delete Job
   const deleteJob = async (id) => {
-    const res = await fetch(`/api/jobs/${id}`, {
+    const token = localStorage.getItem('token');
+    await fetch(`/api/jobs/${id}`, {
       method: 'DELETE',
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
     });
-    return;
   };
 
-  // Update Job
   const updateJob = async (job) => {
-    const res = await fetch(`/api/jobs/${job.id}`, {
+    const token = localStorage.getItem('token');
+    await fetch(`/api/jobs/${job.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify(job),
     });
-    return;
   };
 
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path='/' element={<MainLayout />}>
+      <Route
+        path='/'
+        element={
+          <MainLayout
+            isAuthenticated={isAuthenticated}
+            onLogout={handleLogout}
+          />
+        }
+      >
         <Route index element={<HomePage />} />
         <Route path='/jobs' element={<JobsPage />} />
-        <Route path='/add-job' element={<AddJobPage addJobSubmit={addJob} />} />
+
+        <Route
+          path='/add-job'
+          element={
+            isAuthenticated ? (
+              <AddJobPage addJobSubmit={addJob} />
+            ) : (
+              <Navigate to='/login' replace />
+            )
+          }
+        />
+
         <Route
           path='/edit-job/:id'
-          element={<EditJobPage updateJobSubmit={updateJob} />}
+          element={
+            isAuthenticated ? (
+              <EditJobPage updateJobSubmit={updateJob} />
+            ) : (
+              <Navigate to='/login' replace />
+            )
+          }
           loader={jobLoader}
         />
-        <Route path='/signup' element={<SignupPage />} />
-        <Route path='/login' element={<LoginPage />} />
+
+        <Route
+          path='/signup'
+          element={<SignupPage setIsAuthenticated={setIsAuthenticated} />}
+        />
+        <Route
+          path='/login'
+          element={<LoginPage setIsAuthenticated={setIsAuthenticated} />}
+        />
+
         <Route
           path='/jobs/:id'
           element={<JobPage deleteJob={deleteJob} />}
@@ -72,4 +119,5 @@ const App = () => {
 
   return <RouterProvider router={router} />;
 };
+
 export default App;
