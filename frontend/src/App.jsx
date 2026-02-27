@@ -24,7 +24,7 @@ const App = () => {
       },
       body: JSON.stringify(newJob),
     });
-    return;
+    return res;
   };
 
   // Delete Job
@@ -32,7 +32,7 @@ const App = () => {
     const res = await fetch(`/api/jobs/${id}`, {
       method: "DELETE",
     });
-    return;
+    return res;
   };
 
   // Update Job
@@ -44,7 +44,7 @@ const App = () => {
       },
       body: JSON.stringify(job),
     });
-    return;
+    return res;
   };
 
   const router = createBrowserRouter(
