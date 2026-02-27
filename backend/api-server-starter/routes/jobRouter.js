@@ -13,9 +13,7 @@ const router = express.Router();
 
 router.get("/salary", filterJobsBySalary);
 router.get("/:jobId", getJobById);
-router.get("/", (req, res) => {
-  res.json({ jobs: [{ id: 1, title: "Example Job" }] });
-});
+router.get("/", getAllJobs);
 
 router.use(requireAuth)
 
