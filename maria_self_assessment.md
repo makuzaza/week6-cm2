@@ -63,11 +63,14 @@ const filterJobsBySalary = async (req, res) => {
   }
 };
 ```
+
 **Key Improvements:**
 
 - **Validation:** Ensured that `min` and `max` are finite numbers before filtering. 
 - **Filtering:** Handled salary strings with multiple numbers, missing salaries, or invalid formats.
 - **User-Friendly:** Clear error messages and robust behavior for various edge cases.
+
+![Screenshot](frontend-simplified/public/1.png)
 
 ---
 
@@ -117,6 +120,8 @@ I had issues connecting to MongoDB Atlas from my Render deployment. Locally, eve
 - **Understand External Restrictions:** Cloud deployments may require additional network configuration.
 - **Debugging Strategy:** Test endpoints incrementally and compare local vs deployed behavior.
 
+![Screenshot](frontend-simplified/public/3.png)
+
 ---
 
 ### Example 4: Query Parameter Fix for Job Limit
@@ -136,3 +141,5 @@ But the correct query parameter in our backend was _limit:
 **Lesson Learned:**
 
 - Pay attention to backend conventions and query parameter names; small mismatches can break expected behavior.
+
+![Screenshot](frontend-simplified/public/2.png)
