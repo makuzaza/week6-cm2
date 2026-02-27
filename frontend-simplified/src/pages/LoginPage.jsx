@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import axios from "axios";
 
 const LoginPage = () => {
   const { login } = useContext(AuthContext);
@@ -16,16 +17,26 @@ const LoginPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const fakeUser = {
-      email: formData.email,
-    };
+  try {
+    const response = await axios.post("/api/users/login", formData);
 
-    login(fakeUser);
-    console.log("Logged in:", fakeUser);
-  };
+    console.log("Login success:", response.data);
+
+    // اگر backend این شکلی برگردونه:
+    // { token: "...", user: {...} }
+
+    login(response.data);
+
+  } catch (error) {
+    console.error(
+      "Login failed:",
+      error.response?.data?.message || error.message
+    );
+  }
+};
 
   return (
     <div className="container mx-auto p-6 max-w-md">
