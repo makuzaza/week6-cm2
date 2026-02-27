@@ -13,6 +13,7 @@ app.use(cors())
 app.use(express.json());
 app.use(morgan("dev"));
 
+app.get("/test", (req, res) => res.send("Render test working!"));
 connectDB();
 
 // Use the userRouter for all /users routes
