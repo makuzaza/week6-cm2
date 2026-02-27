@@ -3,7 +3,9 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   RouterProvider,
+  Navigate
 } from "react-router-dom";
+import { useState } from "react";
 import MainLayout from "./layouts/MainLayout";
 import HomePage from "./pages/HomePage";
 import JobsPage from "./pages/JobsPage";
@@ -15,6 +17,8 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 
 const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token") ?? false);
+
   // Add New Job
   const addJob = async (newJob) => {
     const res = await fetch("/api/jobs", {
@@ -49,13 +53,13 @@ const App = () => {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<MainLayout />}>
+      <Route path="/" element={<MainLayout isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}>
         <Route index element={<HomePage />} />
         <Route path="/jobs" element={<JobsPage />} />
-        <Route path="/add-job" element={<AddJobPage addJobSubmit={addJob} />} />
+        <Route path="/add-job" element={isAuthenticated ? <AddJobPage addJobSubmit={addJob} /> : <Navigate to="/login" />} />
         <Route
           path="/edit-job/:id"
-          element={<EditJobPage updateJobSubmit={updateJob} />}
+          element={isAuthenticated ? <EditJobPage updateJobSubmit={updateJob} /> : <Navigate to="/login" />}
           loader={jobLoader}
         />
         <Route
@@ -63,8 +67,8 @@ const App = () => {
           element={<JobPage deleteJob={deleteJob} />}
           loader={jobLoader}
         />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/login" element={!isAuthenticated ? <LoginPage setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
+        <Route path="/signup" element={!isAuthenticated ? <SignupPage /> : <Navigate to="/" />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>,
     ),

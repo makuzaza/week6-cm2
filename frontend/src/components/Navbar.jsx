@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import logo from "../assets/images/logo.png";
 
-const Navbar = () => {
+const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
   const linkClass = ({ isActive }) =>
     isActive
       ? "bg-black text-white hover:bg-gray-900 rounded-md px-3 py-2"
@@ -21,25 +21,38 @@ const Navbar = () => {
 
             <div className="md:ml-auto">
               <div className="flex space-x-2">
-                <NavLink to="/" className={linkClass}>
-                  Home
-                </NavLink>
+                {isAuthenticated &&
+                  (<>
+                    <NavLink to="/" className={linkClass}>
+                      Home
+                    </NavLink>
 
-                <NavLink to="/jobs" className={linkClass}>
-                  Jobs
-                </NavLink>
+                    <NavLink to="/jobs" className={linkClass}>
+                      Jobs
+                    </NavLink>
 
-                <NavLink to="/add-job" className={linkClass}>
-                  Add Job
-                </NavLink>
+                    <NavLink to="/add-job" className={linkClass}>
+                      Add Job
+                    </NavLink>
 
-                <NavLink to="/login" className={linkClass}>
-                  Login
-                </NavLink>
+                    <NavLink onClick={() => {
+                      localStorage.removeItem("token");
+                      localStorage.removeItem("user");
+                      setIsAuthenticated(false);
+                    }} className={linkClass}>
+                      Logout
+                    </NavLink>
+                  </>)}
+                {!isAuthenticated &&
+                  (<>
+                    <NavLink to="/login" className={linkClass}>
+                      Login
+                    </NavLink>
 
-                <NavLink to="/signup" className={linkClass}>
-                  Sign Up
-                </NavLink>
+                    <NavLink to="/signup" className={linkClass}>
+                      Sign Up
+                    </NavLink>
+                  </>)}
               </div>
             </div>
           </div>
