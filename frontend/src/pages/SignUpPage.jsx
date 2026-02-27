@@ -1,229 +1,93 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 
-const SignupComponent = ({ setIsAuthenticated }) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [phone_number, setPhoneNumber] = useState("");
-  const [gender, setGender] = useState("");
-  const [address, setAddress] = useState({
+const SignupPage = () => {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phone_number: "",
+    gender: "",
     street: "",
     city: "",
     zipCode: "",
   });
 
-  const navigate = useNavigate();
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name.startsWith("address.")) {
-      const key = name.split(".")[1];
-      setAddress((prev) => ({
-        ...prev,
-        [key]: value,
-      }));
-      return;
-    }
-
-    if (name === "name") setName(value);
-    if (name === "email") setEmail(value);
-    if (name === "password") setPassword(value);
-    if (name === "phone_number") setPhoneNumber(value);
-    if (name === "gender") setGender(value);
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleSignup = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError(null);
 
     try {
-      const response = await fetch("/api/users/signup", {
+      const res = await fetch("/api/users/signup", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
-          name,
-          email,
-          password,
-          phone_number,
-          gender,
-          address,
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          phone_number: formData.phone_number,
+          gender: formData.gender,
+          address: {
+            street: formData.street,
+            city: formData.city,
+            zipCode: formData.zipCode,
+          },
         }),
       });
 
-      const data = await response.json();
-      console.log("signup status:", response.status);
-      console.log("signup response:", data);
+      const data = await res.json();
 
-      if (!response.ok) {
-        const msg = data?.error || data?.message || "Signup failed";
-        setError(msg);
-        toast.error(msg);
-        return;
+      if (!res.ok) {
+        throw new Error(data.error || "Signup failed");
       }
 
-      if (data?.token) localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data?.user || data));
+      // Redirect to login after successful signup
+      navigate("/login");
 
-      if (typeof setIsAuthenticated === "function") {
-        setIsAuthenticated(true);
-      }
-
-      toast.success("Signup successful");
-      navigate("/");
     } catch (err) {
-      const msg = "Error during signup";
-      setError(msg);
-      toast.error(msg);
+      setError(err.message);
     }
   };
 
   return (
-    <section className="bg-indigo-50">
-      <div className="container m-auto max-w-2xl py-24">
-        <div className="bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0">
-          <form onSubmit={handleSignup}>
-            <h2 className="text-3xl text-center font-semibold mb-6">Sign Up</h2>
+    <div className="container mx-auto p-6 max-w-lg">
+      <h2 className="text-2xl font-bold mb-4">Signup</h2>
 
-            <div className="mb-4">
-              <label className="block text-gray-700 font-bold mb-2">Name</label>
-              <input
-                type="text"
-                name="name"
-                className="border rounded w-full py-2 px-3"
-                placeholder="Your full name"
-                value={name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-gray-700 font-bold mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                className="border rounded w-full py-2 px-3"
-                placeholder="you@example.com"
-                value={email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-gray-700 font-bold mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                className="border rounded w-full py-2 px-3"
-                placeholder="Create a password"
-                value={password}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-gray-700 font-bold mb-2">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                name="phone_number"
-                className="border rounded w-full py-2 px-3"
-                placeholder="+358401234567"
-                value={phone_number}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-gray-700 font-bold mb-2">
-                Gender
-              </label>
-              <select
-                name="gender"
-                className="border rounded w-full py-2 px-3"
-                value={gender}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-
-            <h3 className="text-2xl mb-5">Address</h3>
-
-            <div className="mb-4">
-              <label className="block text-gray-700 font-bold mb-2">
-                Street
-              </label>
-              <input
-                type="text"
-                name="address.street"
-                className="border rounded w-full py-2 px-3"
-                placeholder="Street address"
-                value={address.street}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-gray-700 font-bold mb-2">City</label>
-              <input
-                type="text"
-                name="address.city"
-                className="border rounded w-full py-2 px-3"
-                placeholder="City"
-                value={address.city}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-gray-700 font-bold mb-2">
-                Zip Code
-              </label>
-              <input
-                type="text"
-                name="address.zipCode"
-                className="border rounded w-full py-2 px-3"
-                placeholder="Zip code"
-                value={address.zipCode}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            {error && <p className="text-red-500 mb-4">{error}</p>}
-
-            <div>
-              <button
-                className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
-                type="submit"
-              >
-                Sign Up
-              </button>
-            </div>
-          </form>
+      {error && (
+        <div className="bg-red-100 text-red-700 p-2 rounded">
+          {error}
         </div>
-      </div>
-    </section>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input name="name" placeholder="Full Name" onChange={handleChange} className="w-full border p-2 rounded" required />
+        <input name="email" placeholder="Email" onChange={handleChange} className="w-full border p-2 rounded" required />
+        <input name="password" type="password" placeholder="Password" onChange={handleChange} className="w-full border p-2 rounded" required />
+        <input name="phone_number" placeholder="Phone Number" onChange={handleChange} className="w-full border p-2 rounded" />
+        <input name="gender" placeholder="Gender" onChange={handleChange} className="w-full border p-2 rounded" />
+        <input name="street" placeholder="Street" onChange={handleChange} className="w-full border p-2 rounded" />
+        <input name="city" placeholder="City" onChange={handleChange} className="w-full border p-2 rounded" />
+        <input name="zipCode" placeholder="Zip Code" onChange={handleChange} className="w-full border p-2 rounded" />
+
+        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded w-full">
+          Register
+        </button>
+      </form>
+    </div>
   );
 };
 
-export default SignupComponent;
+export default SignupPage;
