@@ -101,7 +101,7 @@ const App = () => {
           path="/login"
           element={
             !isAuthenticated ? (
-              <LoginComponent setIsAuthenticated={setIsAuthenticated} />
+              <LoginPage setIsAuthenticated={setIsAuthenticated} />
             ) : (
               <Navigate to="/" />
             )
@@ -111,7 +111,7 @@ const App = () => {
           path="/signup"
           element={
             !isAuthenticated ? (
-              <SignupComponent setIsAuthenticated={setIsAuthenticated} />
+              <SignupPage setIsAuthenticated={setIsAuthenticated} />
             ) : (
               <Navigate to="/" />
             )
