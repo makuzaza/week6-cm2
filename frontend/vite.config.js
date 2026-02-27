@@ -25,7 +25,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       "/api": {
-        target: "http://localhost:4000",
+        target: "https://week6-cm2-ec2u.onrender.com/",
         changeOrigin: true,
       },
     },
