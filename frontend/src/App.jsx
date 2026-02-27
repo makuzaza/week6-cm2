@@ -11,6 +11,8 @@ import NotFoundPage from './pages/NotFoundPage';
 import JobPage, { jobLoader } from './pages/JobPage';
 import AddJobPage from './pages/AddJobPage';
 import EditJobPage from './pages/EditJobPage';
+import SignupPage from './pages/SignupPage';
+import LoginPage from './pages/LoginPage';
 
 const App = () => {
   // Add New Job
@@ -56,6 +58,8 @@ const App = () => {
           element={<EditJobPage updateJobSubmit={updateJob} />}
           loader={jobLoader}
         />
+        <Route path='/signup' element={<SignupPage />} />
+        <Route path='/login' element={<LoginPage />} />
         <Route
           path='/jobs/:id'
           element={<JobPage deleteJob={deleteJob} />}

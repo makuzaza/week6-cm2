@@ -15,8 +15,19 @@ const AddJobPage = ({ addJobSubmit }) => {
 
   const navigate = useNavigate();
 
+  const getToken = () => {
+    // adjust keys if your app stores token differently
+    return localStorage.getItem('token');
+  };
+
   const submitForm = (e) => {
     e.preventDefault();
+    
+    const token = getToken();
+    if (!token) {
+      toast.error('Please login first');
+      return navigate('/login');
+    }
 
     const newJob = {
       title,
@@ -32,11 +43,14 @@ const AddJobPage = ({ addJobSubmit }) => {
       },
     };
 
-    addJobSubmit(newJob);
-
-    toast.success('Job Added Successfully');
-
-    return navigate('/jobs');
+    try {
+      addJobSubmit(newJob);
+      toast.success('Job Added Successfully');
+      return navigate('/jobs');
+    } catch (error) {
+      toast.error('Failed to add job');
+      console.error('Error adding job:', error);
+    }
   };
 
   return (

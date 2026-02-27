@@ -42,8 +42,5 @@ const JobListings = ({ isHome = false }) => {
       </div>
     </section>
   );
-
-
-  
 };
 export default JobListings;
