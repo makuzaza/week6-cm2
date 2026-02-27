@@ -24,7 +24,7 @@ const SignupPage = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("/api/users/register", {
+      const response = await axios.post("/api/users/signup", {
         name: formData.name,
         email: formData.email,
         password: formData.password,

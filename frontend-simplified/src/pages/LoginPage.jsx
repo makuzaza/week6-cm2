@@ -1,10 +1,7 @@
-import { useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useState } from "react";
 import axios from "axios";
 
 const LoginPage = () => {
-  const { login } = useContext(AuthContext);
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,25 +15,23 @@ const LoginPage = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const response = await axios.post("/api/users/login", formData);
+    try {
+      const response = await axios.post("/api/users/login", formData);
 
-    console.log("Login success:", response.data);
+      console.log("Login success:", response.data);
 
-    // اگر backend این شکلی برگردونه:
-    // { token: "...", user: {...} }
+      // فقط ذخیره ساده
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
 
-    login(response.data);
+      alert("Login successful ✅");
 
-  } catch (error) {
-    console.error(
-      "Login failed:",
-      error.response?.data?.message || error.message
-    );
-  }
-};
+    } catch (error) {
+      alert(error.response?.data?.error || "Login failed ❌");
+    }
+  };
 
   return (
     <div className="container mx-auto p-6 max-w-md">
@@ -48,6 +43,7 @@ const LoginPage = () => {
           placeholder="Email"
           onChange={handleChange}
           className="w-full border p-2 rounded"
+          required
         />
 
         <input
@@ -56,6 +52,7 @@ const LoginPage = () => {
           placeholder="Password"
           onChange={handleChange}
           className="w-full border p-2 rounded"
+          required
         />
 
         <button
@@ -70,4 +67,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
