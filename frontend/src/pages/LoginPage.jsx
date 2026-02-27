@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
+  const navigate = useNavigate();   // 👈 این اضافه شد
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -34,7 +37,7 @@ const LoginPage = () => {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      alert("Login successful ✅");
+      navigate("/jobs");   // redirect to jobs page after successful login
     } catch (err) {
       alert(err.message);
     }
