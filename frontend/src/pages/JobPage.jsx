@@ -8,18 +8,28 @@ const JobPage = ({ deleteJob }) => {
   const { id } = useParams();
   const job = useLoaderData();
 
-  const onDeleteClick = (jobId) => {
+  const onDeleteClick = async (jobId) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      toast.error("Please login first");
+      navigate("/login");
+      return;
+    }
+
     const confirm = window.confirm(
-      'Are you sure you want to delete this listing?'
+      "Are you sure you want to delete this listing?"
     );
 
     if (!confirm) return;
 
-    deleteJob(jobId);
-
-    toast.success('Job deleted successfully');
-
-    navigate('/jobs');
+    try {
+      await deleteJob(jobId);
+      toast.success("Job deleted successfully");
+      navigate("/jobs");
+    } catch (error) {
+      toast.error(error.message || "Failed to delete job");
+    }
   };
 
   return (
