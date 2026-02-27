@@ -1,11 +1,24 @@
 import { NavLink } from "react-router-dom";
 import logo from "../assets/images/logo.png";
 
-const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
+const Navbar = ({ isAuthenticated, onLogout }) => {
   const linkClass = ({ isActive }) =>
     isActive
-      ? "bg-black text-white hover:bg-gray-900 rounded-md px-3 py-2"
-      : "text-white hover:bg-gray-900 rounded-md px-3 py-2";
+      ? "bg-black text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2"
+      : "text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2";
+
+  const getUserEmail = () => {
+    try {
+      const raw = localStorage.getItem("user");
+      if (!raw) return "";
+      const parsed = JSON.parse(raw);
+      return parsed?.email || "";
+    } catch {
+      return "";
+    }
+  };
+
+  const email = getUserEmail();
 
   return (
     <nav className="bg-indigo-700 border-b border-indigo-500">
@@ -20,39 +33,42 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
             </NavLink>
 
             <div className="md:ml-auto">
-              <div className="flex space-x-2">
-                {isAuthenticated &&
-                  (<>
-                    <NavLink to="/" className={linkClass}>
-                      Home
-                    </NavLink>
+              <div className="flex space-x-2 items-center">
+                <NavLink to="/" className={linkClass}>
+                  Home
+                </NavLink>
+                {isAuthenticated && (
+                  <> 
+                  <NavLink to="/jobs" className={linkClass}>
+                    Jobs
+                  </NavLink>
+                  <NavLink to="/add-job" className={linkClass}>
+                    Add Job
+                  </NavLink>
+                    <span className="text-indigo-100 px-2">
+                      Welcome{email ? `, ${email}` : ""}
+                    </span>
+                  </>
+                )}
 
-                    <NavLink to="/jobs" className={linkClass}>
-                      Jobs
-                    </NavLink>
-
-                    <NavLink to="/add-job" className={linkClass}>
-                      Add Job
-                    </NavLink>
-
-                    <NavLink onClick={() => {
-                      localStorage.removeItem("token");
-                      localStorage.removeItem("user");
-                      setIsAuthenticated(false);
-                    }} className={linkClass}>
-                      Logout
-                    </NavLink>
-                  </>)}
-                {!isAuthenticated &&
-                  (<>
+                {!isAuthenticated ? (
+                  <>
                     <NavLink to="/login" className={linkClass}>
                       Login
                     </NavLink>
-
                     <NavLink to="/signup" className={linkClass}>
                       Sign Up
                     </NavLink>
-                  </>)}
+                  </>
+                ) : (
+                  <button
+                    onClick={onLogout}
+                    className="text-white hover:bg-gray-900 rounded-md px-3 py-2"
+                    type="button"
+                  >
+                    Logout
+                  </button>
+                )}
               </div>
             </div>
           </div>
