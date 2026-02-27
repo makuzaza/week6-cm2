@@ -5,13 +5,15 @@ const {
   createJob,
   updateJob,
   deleteJob,
+  filterJobsBySalary,
 } = require("../controllers/jobControllers");
 const requireAuth = require("../middleware/requireAuth");
 
 const router = express.Router();
 
-router.get("/", getAllJobs);
+router.get("/salary", filterJobsBySalary);
 router.get("/:jobId", getJobById);
+router.get("/", getAllJobs);
 
 router.use(requireAuth)
 

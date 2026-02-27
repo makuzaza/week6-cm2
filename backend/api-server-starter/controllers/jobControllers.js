@@ -88,10 +88,44 @@ const deleteJob = async (req, res) => {
   }
 };
 
+// GET /jobs/salary?min=4000&max=9000
+const filterJobsBySalary = async (req, res) => {
+  const minSalary = Number(req.query.min);
+  const maxSalary = Number(req.query.max);
+
+  if (!Number.isFinite(minSalary) || !Number.isFinite(maxSalary)) {
+    return res.status(400).json({ message: "min and max must be numbers" });
+  }
+
+  try {
+    const jobs = await Job.find({});
+    const filtered = jobs.filter((job) => {
+      if (!job.salary) return false;
+
+      const nums = String(job.salary)
+        .match(/\d+/g)
+        ?.map(Number)
+        .filter(Number.isFinite) || [];
+
+      if (!nums.length) return false;
+
+      const low = Math.min(...nums);
+      const high = Math.max(...nums);
+
+      return high >= minSalary && low <= maxSalary;
+    });
+
+    res.status(200).json(filtered);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getAllJobs,
   getJobById,
   createJob,
   updateJob,
   deleteJob,
+  filterJobsBySalary,
 };
