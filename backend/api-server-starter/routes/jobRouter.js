@@ -5,13 +5,15 @@ const {
   createJob,
   updateJob,
   deleteJob,
+  filterJobsBySalary,
 } = require("../controllers/jobControllers");
 
 const router = express.Router();
 
+router.get("/salary", filterJobsBySalary);
+router.get("/:jobId", getJobById);
 router.get("/", getAllJobs);
 router.post("/", createJob);
-router.get("/:jobId", getJobById);
 router.put("/:jobId", updateJob);
 router.delete("/:jobId", deleteJob);
 
