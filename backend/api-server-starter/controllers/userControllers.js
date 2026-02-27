@@ -7,6 +7,7 @@ const createToken = (_id) => {
     return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
 };
 
+// POST /login
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
@@ -33,8 +34,9 @@ const loginUser = async (req, res) => {
     }
 };
 
+// POST /signup
 const signupUser = async (req, res) => {
-    const { email, password } = req.body;
+    const { name, email, password, phone_number, gender, address } = req.body;
 
     try {
         if (!email || !password) {
@@ -55,7 +57,7 @@ const signupUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
 
-        const user = await User.create({ email, password: hash });
+        const user = await User.create({ name, email, password: hash, phone_number, gender, address });
 
         const token = createToken(user._id);
 
