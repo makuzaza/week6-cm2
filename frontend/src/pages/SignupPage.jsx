@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -24,26 +23,34 @@ const SignupPage = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("/api/users/signup", {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        phone_number: formData.phone_number,
-        gender: formData.gender,
-        address: {
-          street: formData.street,
-          city: formData.city,
-          zipCode: formData.zipCode,
+      const res = await fetch("/api/users/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          phone_number: formData.phone_number,
+          gender: formData.gender,
+          address: {
+            street: formData.street,
+            city: formData.city,
+            zipCode: formData.zipCode,
+          },
+        }),
       });
 
-      console.log("Signup success:", response.data);
+      const data = await res.json();
 
-    } catch (error) {
-      console.error(
-        "Signup failed:",
-        error.response?.data?.message || error.message
-      );
+      if (!res.ok) {
+        throw new Error(data.error || "Signup failed");
+      }
+
+      alert("Signup successful ✅");
+    } catch (err) {
+      alert(err.message);
     }
   };
 

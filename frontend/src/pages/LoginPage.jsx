@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -18,18 +17,26 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("/api/users/login", formData);
+      const res = await fetch("/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-      console.log("Login success:", response.data);
+      const data = await res.json();
 
-      // فقط ذخیره ساده
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      if (!res.ok) {
+        throw new Error(data.error || "Login failed");
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
       alert("Login successful ✅");
-
-    } catch (error) {
-      alert(error.response?.data?.error || "Login failed ❌");
+    } catch (err) {
+      alert(err.message);
     }
   };
 
@@ -45,7 +52,6 @@ const LoginPage = () => {
           className="w-full border p-2 rounded"
           required
         />
-
         <input
           name="password"
           type="password"
@@ -54,7 +60,6 @@ const LoginPage = () => {
           className="w-full border p-2 rounded"
           required
         />
-
         <button
           type="submit"
           className="bg-green-600 text-white px-4 py-2 rounded w-full"
