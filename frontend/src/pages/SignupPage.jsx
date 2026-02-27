@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -12,6 +15,8 @@ const SignupPage = () => {
     zipCode: "",
   });
 
+  const [error, setError] = useState(null);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -21,6 +26,7 @@ const SignupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
 
     try {
       const res = await fetch("/api/users/signup", {
@@ -48,9 +54,11 @@ const SignupPage = () => {
         throw new Error(data.error || "Signup failed");
       }
 
-      alert("Signup successful ✅");
+      // Redirect to login after successful signup
+      navigate("/login");
+
     } catch (err) {
-      alert(err.message);
+      setError(err.message);
     }
   };
 
@@ -58,10 +66,16 @@ const SignupPage = () => {
     <div className="container mx-auto p-6 max-w-lg">
       <h2 className="text-2xl font-bold mb-4">Signup</h2>
 
+      {error && (
+        <div className="bg-red-100 text-red-700 p-2 rounded">
+          {error}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input name="name" placeholder="Full Name" onChange={handleChange} className="w-full border p-2 rounded" />
-        <input name="email" placeholder="Email" onChange={handleChange} className="w-full border p-2 rounded" />
-        <input name="password" type="password" placeholder="Password" onChange={handleChange} className="w-full border p-2 rounded" />
+        <input name="name" placeholder="Full Name" onChange={handleChange} className="w-full border p-2 rounded" required />
+        <input name="email" placeholder="Email" onChange={handleChange} className="w-full border p-2 rounded" required />
+        <input name="password" type="password" placeholder="Password" onChange={handleChange} className="w-full border p-2 rounded" required />
         <input name="phone_number" placeholder="Phone Number" onChange={handleChange} className="w-full border p-2 rounded" />
         <input name="gender" placeholder="Gender" onChange={handleChange} className="w-full border p-2 rounded" />
         <input name="street" placeholder="Street" onChange={handleChange} className="w-full border p-2 rounded" />
