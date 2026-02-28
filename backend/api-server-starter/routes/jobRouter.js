@@ -15,7 +15,7 @@ router.get("/salary", filterJobsBySalary);
 router.get("/:jobId", getJobById);
 router.get("/", getAllJobs);
 
-// router.use(requireAuth)
+router.use(requireAuth)
 
 router.post("/", createJob);
 router.put("/:jobId", updateJob);
