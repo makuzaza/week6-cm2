@@ -16,7 +16,6 @@ const AddJobPage = ({ addJobSubmit }) => {
   const navigate = useNavigate();
 
   const getToken = () => {
-    // adjust keys if your app stores token differently
     return localStorage.getItem("token");
   };
 
