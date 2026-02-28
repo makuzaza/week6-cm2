@@ -16,6 +16,8 @@ import EditJobPage from "./pages/EditJobPage";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem("token"),
@@ -29,7 +31,7 @@ const App = () => {
 
   const addJob = async (newJob) => {
     const token = localStorage.getItem("token");
-    await fetch("/api/jobs", {
+    await fetch(`${API_BASE}/api/jobs`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -41,7 +43,7 @@ const App = () => {
 
   const deleteJob = async (id) => {
     const token = localStorage.getItem("token");
-    await fetch(`/api/jobs/${id}`, {
+    await fetch(`${API_BASE}/api/jobs/${id}`, {
       method: "DELETE",
       headers: {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -51,7 +53,7 @@ const App = () => {
 
   const updateJob = async (job) => {
     const token = localStorage.getItem("token");
-    await fetch(`/api/jobs/${job.id}`, {
+    await fetch(`${API_BASE}/api/jobs/${job.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

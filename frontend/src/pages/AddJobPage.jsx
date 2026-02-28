@@ -20,7 +20,7 @@ const AddJobPage = ({ addJobSubmit }) => {
     return localStorage.getItem("token");
   };
 
-  const submitForm = (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
 
     const token = getToken();
@@ -46,7 +46,7 @@ const AddJobPage = ({ addJobSubmit }) => {
       toast.error(
         `Please fill all required fields: ${missing.map((m) => m.key).join(", ")}`,
       );
-      return; // do not send request
+      return;
     }
 
     const newJob = {
@@ -64,7 +64,7 @@ const AddJobPage = ({ addJobSubmit }) => {
     };
 
     try {
-      addJobSubmit(newJob);
+      await addJobSubmit(newJob);
       toast.success("Job Added Successfully");
       return navigate("/jobs");
     } catch (error) {

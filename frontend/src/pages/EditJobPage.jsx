@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useParams, useLoaderData, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
 const EditJobPage = ({ updateJobSubmit }) => {
   const job = useLoaderData();
   const [title, setTitle] = useState(job.title);
@@ -19,7 +21,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const submitForm = (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
 
     const updatedJob = {
@@ -37,11 +39,13 @@ const EditJobPage = ({ updateJobSubmit }) => {
       },
     };
 
-    updateJobSubmit(updatedJob);
-
-    toast.success('Job Updated Successfully');
-
-    return navigate(`/jobs/${id}`);
+    try {
+      await updateJobSubmit(updatedJob);
+      toast.success("Job Updated Successfully");
+      navigate(`/jobs/${id}`, { replace: true });
+    } catch (error) {
+      toast.error(error.message || "Failed to update job");
+  }
   };
 
   return (

@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
 const SignupComponent = ({ setIsAuthenticated }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -41,7 +43,7 @@ const SignupComponent = ({ setIsAuthenticated }) => {
     setError("");
 
     try {
-      const response = await fetch("/api/users/signup", {
+      const response = await fetch(`${API_BASE}/api/users/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
