@@ -25,7 +25,7 @@
 
 Successful signup and backend response:
 
-![Signup Response](../../pic/singup.png)
+![Signup Response](../pic/singup.png)
 
 ---
 
@@ -40,11 +40,11 @@ Successful signup and backend response:
 
 Successful login response:
 
-![Login Response](../../pic/login.png)
+![Login Response](../pic/login.png)
 
 Login success message:
 
-![Login Success](../../pic/succs_login.png)
+![Login Success](../pic/succs_login.png)
 
 ---
 
@@ -61,7 +61,7 @@ Login success message:
 
 Token successfully stored in localStorage:
 
-![Token Storage](../../pic/usertoken.png)
+![Token Storage](../pic/usertoken.png)
 
 ---
 
